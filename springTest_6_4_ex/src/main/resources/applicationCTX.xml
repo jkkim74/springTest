@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+	<context:annotation-config /><!-- java의 설정을 추가시 사용 -->
+	<bean class="com.jkkim.ex.AppConfig" />
+	
+	<bean id="student2" class="com.jkkim.ex.Student">
+		<constructor-arg name="name" value="홍길순" ></constructor-arg>
+		<constructor-arg name="age" value="19" ></constructor-arg>
+		<constructor-arg name="hobby" >
+			<list>
+				<value>써핑</value>
+				<value>낚시</value>
+			</list>
+		</constructor-arg>
+		<property name="height"><value>180</value></property>
+		<property name="weight"><value>55</value></property>
+	</bean>
+
+
+</beans>
