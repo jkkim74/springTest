@@ -3,6 +3,7 @@ package com.skp.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -21,6 +22,9 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	
 	@Autowired
 	private PasswordEncoder paswordEncoder;
+	
+	@Autowired
+	private UserDetailsService userDetailsService;
 	
 	@Override
 	public void configure(ClientDetailsServiceConfigurer configurer) throws Exception{
@@ -42,7 +46,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 		// TODO Auto-generated method stub
 		endpoints.tokenStore(tokenStore)
-		.authenticationManager(authenticationManager);
+		.authenticationManager(authenticationManager)
+		.userDetailsService(userDetailsService);
 	}
 	
 	
