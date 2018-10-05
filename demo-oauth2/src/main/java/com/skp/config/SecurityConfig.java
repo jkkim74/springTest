@@ -5,6 +5,7 @@ import java.util.Arrays;
 import javax.annotation.Resource;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -22,62 +23,57 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter{
-	
-	@Resource(name = "userService")
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Resource(name = "userService")
     private UserDetailsService userDetailsService;
 
-	
-	@Bean
-	@Override
-	protected AuthenticationManager authenticationManager() throws Exception {
-		// TODO Auto-generated method stub
-		return super.authenticationManager();
-	}
-	
     @Bean
-	public PasswordEncoder encoder() {
-		// TODO Auto-generated method stub
-		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-	}
-    
+    public PasswordEncoder encoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
     @Bean
     public TokenStore tokenStore() {
         return new InMemoryTokenStore();
     }
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		// TODO Auto-generated method stub
-		auth.userDetailsService(userDetailsService)
-		    .passwordEncoder(encoder());
-		
-	}
+    @Bean
+    @Override
+    protected AuthenticationManager authenticationManager() throws Exception {
+        return super.authenticationManager();
+    }
+    
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource()
+    {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("*"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		// TODO Auto-generated method stub
-		http
-			.cors()
-			 	  .and()
-			.csrf().disable()
-			.anonymous().disable()
-			.authorizeRequests()
-				.antMatchers("/api-docs/**").permitAll();
-	}
-	
-	@Bean
-	public CorsConfigurationSource corsConfigurationSource() {
-		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(Arrays.asList("*"));
-		configuration.setAllowedMethods(Arrays.asList("*"));
-		configuration.setAllowedHeaders(Arrays.asList("*"));
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", configuration);
-		return source;
-	}
-	
-	
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService)
+                .passwordEncoder(encoder());
+    }
 
- 
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .cors()
+                .and()
+            .csrf()
+                .disable()
+            .anonymous()
+                .disable()
+            .authorizeRequests()
+                .antMatchers("/api-docs/**").permitAll();
+    }
+
+  
 }
